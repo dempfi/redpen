@@ -9,6 +9,8 @@ Redpen reads every reply your model writes and cuts the slop out of it before yo
 
 It only cuts. It never rewrites a word, never calls an LLM, and never touches your own messages.
 
+<img src="assets/demo.gif" width="640" alt="A SillyTavern chat showing the same reply twice. With Redpen off it reads “Her breath hitches. She crosses the room and stays there, chest heaving.” With Redpen on it reads “She crosses the room.” and a notice lists the two cuts.">
+
 The model behind it is [Redpen Slop 11M](https://huggingface.co/dempfi/redpen-slop-11m), an 11M-parameter token classifier. It runs on your own machine, in the browser or on your SillyTavern server, so nothing you write goes to a third party.
 
 ## SillyTavern
