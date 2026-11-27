@@ -12,9 +12,27 @@ function settings() {
   return store[KEY]
 }
 
+const SERVER = '/api/plugins/redpen'
+
+async function serverScorer() {
+  const headers = () => ({ ...context().getRequestHeaders(), 'Content-Type': 'application/json' })
+  const status = await fetch(`${SERVER}/status`, { headers: headers() }).catch(() => null)
+  if (!status?.ok) return null
+  return async text => {
+    const response = await fetch(`${SERVER}/score`, { method: 'POST', headers: headers(), body: JSON.stringify({ texts: [text] }) })
+    if (!response.ok) throw new Error(`Redpen server plugin answered ${response.status}`)
+    return (await response.json()).scores[0]
+  }
+}
+
 let scorer
+let place
 function loadedScorer() {
   scorer ??= (async () => {
+    const remote = await serverScorer()
+    place = remote ? 'server' : 'browser'
+    showPlace()
+    if (remote) return remote
     globalThis.toastr?.info('Loading the Redpen model (44 MB on first use).', 'Redpen')
     return loadScorer(await import(TRANSFORMERS))
   })().catch(error => {
@@ -22,6 +40,11 @@ function loadedScorer() {
     throw error
   })
   return scorer
+}
+
+function showPlace() {
+  const label = document.querySelector('[data-redpen-place]')
+  if (label && place) label.textContent = place === 'server' ? 'The model runs on your SillyTavern server.' : 'The model runs in this browser.'
 }
 
 async function onMessage(id, type) {
@@ -84,6 +107,8 @@ async function mountSettings() {
     })
   }
   panel.querySelector('[data-redpen-restore]')?.addEventListener('click', restoreLast)
+  place = (await serverScorer()) ? 'server' : 'browser'
+  showPlace()
 }
 
 const { eventSource, eventTypes } = context()

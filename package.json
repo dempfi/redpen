@@ -4,9 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test test/*.test.js"
+    "test": "node --test test/*.test.js",
+    "proxy": "node proxy/server.js"
   },
-  "devDependencies": {
+  "main": "server/plugin.js",
+  "dependencies": {
     "@huggingface/transformers": "4.3.2"
   }
 }
