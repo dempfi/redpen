@@ -14,7 +14,7 @@ The model behind it is [Redpen Slop 11M](https://huggingface.co/dempfi/redpen-sl
 ## Install
 
 1. In SillyTavern, open **Extensions** and choose **Install extension**.
-2. Paste `https://github.com/dempfi/SillyTavern-Redpen` and install.
+2. Paste `https://github.com/dempfi/redpen` and install.
 3. Open **Extensions → Redpen** to change the settings.
 
 The model (44 MB) downloads once, on the first reply after install, and is cached by the browser.
