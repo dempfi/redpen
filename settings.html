@@ -5,24 +5,26 @@
       <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
     </div>
     <div class="inline-drawer-content">
-      <label class="checkbox_label"><input type="checkbox" data-redpen="enabled"><span>Cut slop from model replies</span></label>
+      <div class="redpen-controls">
+        <label class="checkbox_label"><input type="checkbox" data-redpen="enabled"><span>Cut slop from model replies</span></label>
 
-      <label for="redpen_threshold">Confidence needed to cut: <span data-redpen-value="threshold"></span></label>
-      <input id="redpen_threshold" type="range" min="0.9" max="0.999" step="0.001" data-redpen="threshold">
-      <small>Higher cuts less. 0.99 is the strict setting: 97% of what it flags there is slop.</small>
+        <label for="redpen_threshold">Confidence needed to cut: <span data-redpen-value="threshold"></span></label>
+        <input id="redpen_threshold" type="range" min="0.9" max="0.999" step="0.001" data-redpen="threshold">
+        <small>Higher cuts less. 0.99 is the strict setting: 97% of what it flags there is slop.</small>
 
-      <label class="checkbox_label"><input type="checkbox" data-redpen="cutSentences"><span>Remove a sentence when all of it is slop</span></label>
-      <label class="checkbox_label"><input type="checkbox" data-redpen="cutTails"><span>Trim a slop tail after a comma or “and”</span></label>
-      <label class="checkbox_label"><input type="checkbox" data-redpen="skipDialogue"><span>Never touch dialogue</span></label>
+        <label class="checkbox_label"><input type="checkbox" data-redpen="cutSentences"><span>Remove a sentence when all of it is slop</span></label>
+        <label class="checkbox_label"><input type="checkbox" data-redpen="cutTails"><span>Trim a slop tail after a comma or “and”</span></label>
+        <label class="checkbox_label"><input type="checkbox" data-redpen="skipDialogue"><span>Never touch dialogue</span></label>
 
-      <label for="redpen_budget">Most of a reply it may remove: <span data-redpen-value="maxCutFraction"></span></label>
-      <input id="redpen_budget" type="range" min="5" max="60" step="5" data-redpen="maxCutFraction" data-unit="percent">
+        <label for="redpen_budget">Most of a reply it may remove: <span data-redpen-value="maxCutFraction"></span></label>
+        <input id="redpen_budget" type="range" min="5" max="60" step="5" data-redpen="maxCutFraction" data-unit="percent">
 
-      <label class="checkbox_label"><input type="checkbox" data-redpen="keepOriginal"><span>Keep the original text with the message</span></label>
-      <label class="checkbox_label"><input type="checkbox" data-redpen="notify"><span>Show what was cut</span></label>
+        <label class="checkbox_label"><input type="checkbox" data-redpen="keepOriginal"><span>Keep the original text with the message</span></label>
+        <label class="checkbox_label"><input type="checkbox" data-redpen="notify"><span>Show what was cut</span></label>
 
-      <div class="menu_button" data-redpen-restore>Restore the last cut message</div>
-      <small data-redpen-place></small>
+        <div class="menu_button" data-redpen-restore>Restore the last cut message</div>
+        <small data-redpen-place></small>
+      </div>
     </div>
   </div>
 </div>

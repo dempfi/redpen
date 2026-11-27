@@ -8,8 +8,8 @@ const context = () => globalThis.SillyTavern.getContext()
 
 function settings() {
   const store = context().extensionSettings
-  store[KEY] = { ...INITIAL, ...store[KEY] }
-  return store[KEY]
+  const current = (store[KEY] ??= {})
+  return Object.assign(current, { ...INITIAL, ...current })
 }
 
 const SERVER = '/api/plugins/redpen'
@@ -60,7 +60,7 @@ async function onMessage(id, type) {
     if (options.keepOriginal) message.extra = { ...message.extra, redpen_original: message.mes, redpen_cuts: cuts }
     message.mes = text
     if (Array.isArray(message.swipes) && Number.isInteger(message.swipe_id)) message.swipes[message.swipe_id] = text
-    updateMessageBlock(id, message)
+    if (document.querySelector(`#chat [mesid="${id}"]`)) updateMessageBlock(id, message)
     await saveChat()
     if (options.notify) globalThis.toastr?.info(cuts.map(cut => cut.removed).join(' · '), `Redpen cut ${cuts.length}`)
   } catch (error) {
