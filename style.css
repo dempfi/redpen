@@ -1,0 +1,9 @@
+.redpen-settings .inline-drawer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.redpen-settings small {
+  opacity: 0.7;
+}

@@ -1,0 +1,12 @@
+{
+  "name": "sillytavern-redpen",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "devDependencies": {
+    "@huggingface/transformers": "4.3.2"
+  }
+}
