@@ -64,7 +64,7 @@ Replies arrive all at once and not word by word, because Redpen needs the whole 
 | --- | --- | --- |
 | `REDPEN_UPSTREAM` | none, required | Your provider's address. |
 | `PORT` | 8787 | The port the proxy listens on. |
-| `REDPEN_THRESHOLD` | 0.99 | Confidence needed to cut. |
+| `REDPEN_THRESHOLD` | 0.95 | Confidence needed to cut. |
 | `REDPEN_MAX_CUT` | 0.3 | Most of a reply it may remove. |
 | `REDPEN_CUT_SENTENCES` | on | Set to `0` to keep sentences that are all slop. |
 | `REDPEN_CUT_TAILS` | on | Set to `0` to keep slop tails. |
@@ -83,12 +83,12 @@ Everything else stays as the model wrote it. A flagged phrase in the middle of a
 
 ## Settings
 
-These are the SillyTavern extension's settings; the proxy takes the same ones as environment variables. The defaults are deliberately conservative. At the default confidence, 97% of what the model flags is slop.
+These are the SillyTavern extension's settings; the proxy takes the same ones as environment variables. At the default confidence, 92% of what the model flags is slop. Raise it to 0.99 and 97% is.
 
 | Setting | Default | What it does |
 | --- | --- | --- |
 | Cut slop from model replies | On | The master switch. |
-| Confidence needed to cut | 0.99 | How sure the model must be. Lower it to cut more. |
+| Confidence needed to cut | 0.95 | How sure the model must be. Raise it to cut less. |
 | Remove a sentence when all of it is slop | On | The first kind of cut. |
 | Trim a slop tail after a comma or “and” | On | The second kind of cut. |
 | Never touch dialogue | On | Leaves anything inside quotation marks alone. |

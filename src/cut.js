@@ -1,5 +1,5 @@
 export const DEFAULTS = Object.freeze({
-  threshold: 0.99,
+  threshold: 0.95,
   cutSentences: true,
   cutTails: true,
   skipDialogue: true,

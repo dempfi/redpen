@@ -56,7 +56,7 @@ test('dialogue is skipped by default, including a later sentence of the same quo
 
 test('scores under the threshold cut nothing', async () => {
   const text = 'He takes the chair by the window. Her breath hitches. He opens the book on the table.'
-  assert.equal(await run(text, ['Her breath hitches'], {}, 0.95), text)
+  assert.equal(await run(text, ['Her breath hitches'], { threshold: 0.99 }, 0.95), text)
   assert.notEqual(await run(text, ['Her breath hitches'], { threshold: 0.9 }, 0.95), text)
 })
 
