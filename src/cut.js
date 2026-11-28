@@ -8,8 +8,12 @@ export const DEFAULTS = Object.freeze({
 
 const MIN_WORDS_KEPT = 3
 const SPAN_FLOOR = 0.5
+const STILL_SLOP = 0.7
 const TAIL_PUNCTUATION = new Set([',', ';', '—', '–'])
-const TAIL_WORDS = new Set(['and', 'but'])
+const CLAUSE_OPENERS = new Set([
+  'and', 'but', 'or', 'nor', 'so', 'yet',
+  'as', 'while', 'when', 'whenever', 'because', 'before', 'after', 'until', 'till', 'since', 'though', 'although', 'if', 'unless', 'whereas', 'once',
+])
 const OPENING_QUOTES = new Set(['“', '«'])
 const CLOSING_QUOTES = new Set(['”', '»'])
 const QUOTES = new Set(['"', ...OPENING_QUOTES, ...CLOSING_QUOTES])
@@ -60,26 +64,37 @@ function core(text, sentence) {
   return { start, end, lead: start - sentence.start, trail: sentence.end - end }
 }
 
-function decide(scored, settings) {
+const hot = piece => piece.prob >= SPAN_FLOOR
+
+function tailOf(scored) {
   const words = scored.filter(piece => piece.word)
-  const hot = piece => piece.prob >= SPAN_FLOOR
+  const w = words.findIndex(hot)
+  if (w < MIN_WORDS_KEPT || !words.slice(w).every(hot)) return null
+  const first = words[w]
+  const before = scored[scored.indexOf(first) - 1]
+  const end = words.at(-1).end
+  if (before && TAIL_PUNCTUATION.has(before.text)) return { start: before.start, end }
+  if (CLAUSE_OPENERS.has(first.text.toLowerCase())) return { start: first.start, end }
+  return null
+}
+
+async function readsClean(text, score) {
+  return (await score(text)).every(piece => !piece.word || piece.prob < STILL_SLOP)
+}
+
+async function decide(body, score, settings) {
+  const scored = await score(body)
+  const words = scored.filter(piece => piece.word)
   const hotWords = words.filter(hot)
   if (!hotWords.length) return null
-  const score = Math.max(...hotWords.map(piece => piece.prob))
-  if (score < settings.threshold) return null
-  if (hotWords.length === words.length) return settings.cutSentences ? { kind: 'sentence', score } : null
-  if (!settings.cutTails) return null
+  const top = Math.max(...hotWords.map(piece => piece.prob))
+  if (top < settings.threshold) return null
+  const whole = settings.cutSentences ? { kind: 'sentence', score: top } : null
+  if (hotWords.length === words.length) return whole
 
-  const first = scored.indexOf(hotWords[0])
-  const kept = scored.slice(0, first).filter(piece => piece.word)
-  const tail = scored.slice(first).filter(piece => piece.word)
-  if (kept.length < MIN_WORDS_KEPT || !tail.every(hot)) return null
-
-  const before = scored[first - 1]
-  const last = tail.at(-1)
-  if (before && TAIL_PUNCTUATION.has(before.text)) return { kind: 'tail', score, start: before.start, end: last.end }
-  if (TAIL_WORDS.has(scored[first].text.toLowerCase())) return { kind: 'tail', score, start: scored[first].start, end: last.end }
-  return null
+  const tail = settings.cutTails ? tailOf(scored) : null
+  if (tail && (await readsClean(body.slice(0, tail.start) + body.slice(tail.end), score))) return { kind: 'tail', score: top, ...tail }
+  return hotWords.length * 2 > words.length ? whole : null
 }
 
 function sentenceRange(text, sentence, inner) {
@@ -118,7 +133,7 @@ export async function redpen(text, score, settings = DEFAULTS) {
     const body = text.slice(inner.start, inner.end)
     const spoken = [...text.slice(sentence.start, sentence.end)].some(char => QUOTES.has(char)) || insideQuote(text, sentence.start)
     if (settings.skipDialogue && spoken) continue
-    const decision = decide(await score(body), settings)
+    const decision = await decide(body, score, settings)
     if (!decision) continue
     const range =
       decision.kind === 'sentence'

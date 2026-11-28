@@ -66,7 +66,7 @@ Replies arrive all at once and not word by word, because Redpen needs the whole 
 | `PORT` | 8787 | The port the proxy listens on. |
 | `REDPEN_THRESHOLD` | 0.95 | Confidence needed to cut. |
 | `REDPEN_MAX_CUT` | 0.3 | Most of a reply it may remove. |
-| `REDPEN_CUT_SENTENCES` | on | Set to `0` to keep sentences that are all slop. |
+| `REDPEN_CUT_SENTENCES` | on | Set to `0` to keep sentences that are mostly slop. |
 | `REDPEN_CUT_TAILS` | on | Set to `0` to keep slop tails. |
 | `REDPEN_SKIP_DIALOGUE` | on | Set to `0` to let it cut inside quotation marks. |
 
@@ -76,8 +76,10 @@ Redpen makes two kinds of cut, and only when the model is confident:
 
 | Cut | Before | After |
 | --- | --- | --- |
-| A sentence that is all slop | He takes the chair by the window. Her breath hitches. He opens the book. | He takes the chair by the window. He opens the book. |
-| A slop tail after a comma or “and” | She crosses the room and stays there, chest heaving. | She crosses the room. |
+| A sentence that is mostly slop | He takes the chair by the window. Her breath hitches. He opens the book. | He takes the chair by the window. He opens the book. |
+| A slop tail that starts a new clause, after a comma or a word like “and”, “as” or “while” | She crosses the room and stays there, chest heaving. | She crosses the room. |
+
+A tail is cut only when everything in front of it is clean, and when the model, reading the shortened sentence again, finds no slop left in it. When no clean cut exists and most of the sentence is slop, the whole sentence goes instead.
 
 Everything else stays as the model wrote it. A flagged phrase in the middle of a sentence is left alone, because removing it would mean rewriting the sentence.
 
@@ -89,8 +91,8 @@ These are the SillyTavern extension's settings; the proxy takes the same ones as
 | --- | --- | --- |
 | Cut slop from model replies | On | The master switch. |
 | Confidence needed to cut | 0.95 | How sure the model must be. Raise it to cut less. |
-| Remove a sentence when all of it is slop | On | The first kind of cut. |
-| Trim a slop tail after a comma or “and” | On | The second kind of cut. |
+| Remove a sentence when most of it is slop | On | The first kind of cut. |
+| Trim a slop tail that starts a new clause | On | The second kind of cut. |
 | Never touch dialogue | On | Leaves anything inside quotation marks alone. |
 | Most of a reply it may remove | 30% | A cap per reply. Redpen never empties a message. |
 | Keep the original text with the message | On | Stores the uncut reply so **Restore the last cut message** can bring it back. |

@@ -12,8 +12,8 @@
         <input id="redpen_threshold" type="range" min="0.7" max="0.999" step="0.001" data-redpen="threshold">
         <small>Higher cuts less. At 0.95, 92% of what it flags is slop; at 0.99, 97% is.</small>
 
-        <label class="checkbox_label"><input type="checkbox" data-redpen="cutSentences"><span>Remove a sentence when all of it is slop</span></label>
-        <label class="checkbox_label"><input type="checkbox" data-redpen="cutTails"><span>Trim a slop tail after a comma or “and”</span></label>
+        <label class="checkbox_label"><input type="checkbox" data-redpen="cutSentences"><span>Remove a sentence when most of it is slop</span></label>
+        <label class="checkbox_label"><input type="checkbox" data-redpen="cutTails"><span>Trim a slop tail that starts a new clause</span></label>
         <label class="checkbox_label"><input type="checkbox" data-redpen="skipDialogue"><span>Never touch dialogue</span></label>
 
         <label for="redpen_budget">Most of a reply it may remove: <span data-redpen-value="maxCutFraction"></span></label>

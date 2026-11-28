@@ -43,9 +43,28 @@ test('a tail is kept when cutting it would leave fewer than three words', async 
   assert.equal(await run(text, ['jaw tight']), text)
 })
 
-test('a tail with no comma or "and" in front of it is left alone', async () => {
+test('a tail that does not start a clause is left alone', async () => {
   const text = 'He sets the cup down with his jaw tight.'
   assert.equal(await run(text, ['jaw tight']), text)
+})
+
+test('a tail that starts at a subordinating conjunction is cut', async () => {
+  assert.equal(await run('He sets the cup down as his jaw goes tight.', ['as his jaw goes tight']), 'He sets the cup down.')
+})
+
+test('a tail cut that would leave slop behind is not made', async () => {
+  const text = 'He takes the chair by the window. Her breath hitches as she waits by the door, chest heaving. He opens the book on the table.'
+  assert.equal(await run(text, ['Her breath hitches', 'chest heaving']), text)
+})
+
+test('a sentence that is mostly slop is removed when no clean tail cut exists', async () => {
+  const text = 'He takes the chair by the window. Her breath hitches in the dark, chest heaving. He opens the book on the table.'
+  assert.equal(await run(text, ['Her breath hitches', 'chest heaving']), 'He takes the chair by the window. He opens the book on the table.')
+})
+
+test('a sentence with a few cold words inside its slop is removed whole, not left as a fragment', async () => {
+  const text = 'He takes the chair by the window. In this quiet moment, time itself seems to stand still. He opens the book on the table.'
+  assert.equal(await run(text, ['In', 'time itself seems to stand still']), 'He takes the chair by the window. He opens the book on the table.')
 })
 
 test('dialogue is skipped by default, including a later sentence of the same quote', async () => {
